@@ -1,10 +1,14 @@
 package riotapi
 
 // MasterPage a collection of summoners mastery pages
-type MasteryPages map[string]MastereyPage
+type MasteryPages struct {
+	Pages []*MasteryPage `json:"pages"`
+}
+
+type SummonerMasteryList map[string]MasteryPages
 
 // MasteryPage a mastery page
-type MastereyPage struct {
+type MasteryPage struct {
 	Current   bool      `json:"current"`
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`

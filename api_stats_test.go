@@ -1,10 +1,6 @@
 package riotapi
 
-import (
-	"os"
-	"testing"
-)
-
+/*
 func TestChampionStatsBySummoner(t *testing.T) {
 	apiKeyEnv := os.Getenv("RIOTKEY")
 
@@ -19,3 +15,4 @@ func TestChampionStatsBySummoner(t *testing.T) {
 	}
 	t.Log(cs)
 }
+*/
