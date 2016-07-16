@@ -43,12 +43,13 @@ var APIEndpoints = map[string]string{
 
 // APIClient Riot API client
 type APIClient struct {
-	endpoint string
-	game     string
-	region   string
-	client   *http.Client
-	key      string // API key
-	tokens   chan struct{}
+	endpoint      string
+	game          string
+	region        string
+	client        *http.Client
+	totalRequests int
+	key           string // API key
+	tokens        chan struct{}
 }
 
 // NewAPIClient create an initalized APIClient

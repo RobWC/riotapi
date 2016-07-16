@@ -20,7 +20,6 @@ type SummonerList map[string]*Summoner
 
 // SummonerByName v1.4 of get summoner by name
 func (c *APIClient) SummonerByName(name string) (s *Summoner, err error) {
-
 	var req *http.Request
 	req, err = c.genRequest("GET", "v1.4", c.genURL([]string{"summoner", "by-name", name}), nil)
 	if err != nil {
