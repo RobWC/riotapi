@@ -25,7 +25,7 @@ func (c *APIClient) SummonerByName(name string) (s *Summoner, err error) {
 	if err != nil {
 		return nil, err
 	}
-	data, err := c.do(req)
+	data, err := c.do(req, true)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +59,7 @@ func (c *APIClient) SummonersByAccountID(ids []int) (sl SummonerList, err error)
 	if err != nil {
 		return sl, err
 	}
-	data, err := c.do(req)
+	data, err := c.do(req, true)
 	if err != nil {
 		return sl, err
 	}
@@ -89,7 +89,7 @@ func (c *APIClient) SummonersByID(ids []int) (sl SummonerList, err error) {
 	if err != nil {
 		return sl, err
 	}
-	data, err := c.do(req)
+	data, err := c.do(req, true)
 	if err != nil {
 		return sl, err
 	}
@@ -119,7 +119,7 @@ func (c *APIClient) SummonerMasteries(ids []int) (sml SummonerMasteryList, err e
 	if err != nil {
 		return sml, err
 	}
-	data, err := c.do(req)
+	data, err := c.do(req, true)
 	if err != nil {
 		return sml, err
 	}

@@ -93,19 +93,21 @@ func (a *APIClient) doRequest(method, version, api string, query url.Values) ([]
 	if err != nil {
 		return nil, err
 	}
-	return a.do(req)
+	return a.do(req, true)
 }
 
 // do execute a request
-func (c *APIClient) do(req *http.Request) ([]byte, error) {
+func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 	// add api key
 
 	// manipulate request
-	query := req.URL.Query()
-	query.Add("api_key", strings.ToUpper(c.key))
+	if apiKey {
+		query := req.URL.Query()
+		query.Add("api_key", strings.ToUpper(c.key))
 
-	//rebuild request
-	req.URL.RawQuery = query.Encode()
+		//rebuild request
+		req.URL.RawQuery = query.Encode()
+	}
 
 	rc := make(chan struct {
 		data []byte
