@@ -41,16 +41,11 @@ var APIEndpoints = map[string]string{
 	"pbe":  "pbe.api.pvp.net",
 }
 
-// APIRateLimit the current rate limit of the api
+// RateLimit the current rate limit of the api
 type RateLimit struct {
 	Limits     map[string]string
 	RetryAfter int
 }
-
-/* Typical Rate Limit
-10 requests every 10 seconds
-500 requests every 10 minutes
-*/
 
 // APIClient Riot API client
 type APIClient struct {
@@ -99,14 +94,6 @@ func (c *APIClient) genRequest(method, version, api string, query url.Values) (*
 	u.Path = fmt.Sprintf("/api/%s/%s/%s/%s", c.game, c.region, version, api)
 	u.RawQuery = query.Encode()
 	return http.NewRequest(method, u.String(), nil)
-}
-
-func (a *APIClient) doRequest(method, version, api string, query url.Values) ([]byte, error) {
-	req, err := a.genRequest("GET", "v2.2", api, nil)
-	if err != nil {
-		return nil, err
-	}
-	return a.do(req, true)
 }
 
 // do execute a request

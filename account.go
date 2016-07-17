@@ -1,6 +1,7 @@
 package riotapi
 
+// Account a summoner's account
 type Account struct {
-	AccountID int
-	PlatforID string
+	AccountID  int
+	PlatformID string
 }
