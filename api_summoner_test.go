@@ -20,6 +20,21 @@ func TestSummonerByName(t *testing.T) {
 	t.Log(s)
 }
 
+// Return a new summoner based upon their name
+func SummonerByNameExamplest() {
+	apiKeyEnv := os.Getenv("RIOTKEY")
+
+	if apiKeyEnv == "" {
+		panic("API Key Not Specified")
+	}
+
+	c := NewAPIClient("na", apiKeyEnv)
+	s, err := c.SummonerByName("MrCrapper")
+	if err != nil && s != nil {
+		panic(err)
+	}
+}
+
 func TestSummonersByAccountID(t *testing.T) {
 	apiKeyEnv := os.Getenv("RIOTKEY")
 

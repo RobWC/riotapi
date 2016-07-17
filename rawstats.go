@@ -57,7 +57,7 @@ type RawStats struct {
 	PlayerScore4                    int
 	PlayerScore5                    int
 	PlayerScore6                    int
-	playerScore7                    int
+	PlayerScore7                    int
 	PlayerScore8                    int
 	PlayerScore9                    int
 	QuadraKills                     int
