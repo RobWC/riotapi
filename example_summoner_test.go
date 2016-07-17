@@ -1,4 +1,4 @@
-package riotapi
+package riotapi_test
 
 import "os"
 
