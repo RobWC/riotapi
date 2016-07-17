@@ -3,7 +3,7 @@ package riotapi
 import "os"
 
 // Return a summoner by name
-func ExampleSummonerByName() {
+func Example_SummonerByName() {
 	apiKeyEnv := os.Getenv("RIOTKEY")
 
 	if apiKeyEnv == "" {
