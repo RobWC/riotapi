@@ -41,6 +41,17 @@ var APIEndpoints = map[string]string{
 	"pbe":  "pbe.api.pvp.net",
 }
 
+// APIRateLimit the current rate limit of the api
+type RateLimit struct {
+	Limits     map[string]string
+	RetryAfter int
+}
+
+/* Typical Rate Limit
+10 requests every 10 seconds
+500 requests every 10 minutes
+*/
+
 // APIClient Riot API client
 type APIClient struct {
 	endpoint      string
@@ -50,6 +61,7 @@ type APIClient struct {
 	totalRequests int
 	key           string // API key
 	tokens        chan struct{}
+	RateLimit     *RateLimit
 }
 
 // NewAPIClient create an initalized APIClient
@@ -69,7 +81,8 @@ func NewAPIClient(region, key string) *APIClient {
 				}).Dial,
 				TLSHandshakeTimeout: 10 * time.Second,
 			}},
-		tokens: make(chan struct{}, 20),
+		tokens:    make(chan struct{}, 20),
+		RateLimit: &RateLimit{Limits: make(map[string]string)},
 	}
 
 	return c
@@ -109,6 +122,10 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 		req.URL.RawQuery = query.Encode()
 	}
 
+	if c.RateLimit.RetryAfter > 0 {
+		time.Sleep(time.Second * time.Duration(c.RateLimit.RetryAfter))
+	}
+
 	rc := make(chan struct {
 		data []byte
 		err  error
@@ -128,6 +145,16 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 			}{nil, err}
 		}
 		defer resp.Body.Close()
+
+		rl := req.Header.Get("X-Rate-Limit-Count")
+		if rl != "" {
+			c.updateRateLimits(rl)
+		}
+
+		ra := req.Header.Get("Retry-After")
+		if rl != "" {
+			c.updateRetry(ra)
+		}
 
 		data, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
