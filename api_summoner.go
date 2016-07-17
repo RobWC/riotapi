@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// Summoner a summoner account data
 type Summoner struct {
 	ID           int    `json:"id"`
 	Name         string `json:"name"`
@@ -16,6 +17,8 @@ type Summoner struct {
 	RevisionDate int    `json:"revisionDate"`
 }
 
+// SummonerList a list of summoners with the key being the summoner ID in lower case
+// It is a bit strange
 type SummonerList map[string]*Summoner
 
 // SummonerByName v1.4 of get summoner by name
@@ -72,6 +75,7 @@ func (c *APIClient) SummonersByAccountID(ids []int) (sl SummonerList, err error)
 	return sl, nil
 }
 
+// SummonersById get up to 40 summoners by their IDs
 func (c *APIClient) SummonersByID(ids []int) (sl SummonerList, err error) {
 	var req *http.Request
 	var sids []string
@@ -102,6 +106,7 @@ func (c *APIClient) SummonersByID(ids []int) (sl SummonerList, err error) {
 	return sl, nil
 }
 
+// SummonerMasteries return up to 40 summoners masteries
 func (c *APIClient) SummonerMasteries(ids []int) (sml SummonerMasteryList, err error) {
 	var req *http.Request
 	var sids []string
@@ -130,4 +135,35 @@ func (c *APIClient) SummonerMasteries(ids []int) (sml SummonerMasteryList, err e
 	}
 
 	return sml, err
+}
+
+// SummonerRunes return a summoners masteries
+func (c *APIClient) SummonerRunes(ids []int) (rp SummonerRuneList, err error) {
+	var req *http.Request
+	var sids []string
+	rp = make(SummonerRuneList)
+
+	if len(ids) > 40 {
+		return rp, fmt.Errorf("Exceeds maximum of 40 ids")
+	}
+
+	for i := range ids {
+		sids = append(sids, strconv.Itoa(ids[i]))
+	}
+
+	req, err = c.genRequest("GET", "v1.4", c.genURL([]string{"summoner", strings.Join(sids, ","), "runes"}), nil)
+	if err != nil {
+		return rp, err
+	}
+	data, err := c.do(req, true)
+	if err != nil {
+		return rp, err
+	}
+
+	err = json.Unmarshal(data, &rp)
+	if err != nil {
+		return nil, err
+	}
+
+	return rp, err
 }
