@@ -21,7 +21,7 @@ func TestSummonerByName(t *testing.T) {
 }
 
 // Return a new summoner based upon their name
-func SummonerByNameExamplest() {
+func ExampleSummonerByName() {
 	apiKeyEnv := os.Getenv("RIOTKEY")
 
 	if apiKeyEnv == "" {
