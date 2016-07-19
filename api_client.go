@@ -38,7 +38,22 @@ var APIEndpoints = map[string]string{
 	"oce":  "oce.api.pvp.net",
 	"tr":   "tr.api.pvp.net",
 	"ru":   "ru.api.pvp.net",
-	"pbe":  "pbe.api.pvp.net",
+	"jp":   "jp.api.pvp.net",
+}
+
+// ShardName a mapping of regions to shard names
+var ShardName = map[string]string{
+	"br":   "BR1",
+	"eune": "EUN1",
+	"euw":  "EUW1",
+	"kr":   "KR",
+	"lan":  "LA1",
+	"las":  "LA2",
+	"na":   "NA1",
+	"oce":  "OC1",
+	"tr":   "TR1",
+	"ru":   "RU",
+	"jp":   "JP1",
 }
 
 // RateLimit the current rate limit of the api
@@ -62,9 +77,10 @@ type APIClient struct {
 // NewAPIClient create an initalized APIClient
 func NewAPIClient(region, key string) *APIClient {
 	c := &APIClient{
-		key:    key,
-		game:   "lol",
-		region: strings.ToLower(region),
+		key:       key,
+		game:      "lol",
+		region:    strings.ToLower(region),
+		shardName: ShardName[strings.ToLower(region)],
 		client: &http.Client{
 			Jar:     nil,
 			Timeout: time.Second * 5,

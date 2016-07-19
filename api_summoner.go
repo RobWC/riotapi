@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+// https://developer.riotgames.com/api/methods#!/1079
+
 // Summoner a summoner account data
 type Summoner struct {
 	ID           int    `json:"id"`
