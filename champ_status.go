@@ -8,7 +8,7 @@ type ChampionStatus struct {
 	Active            bool `json:"active"`
 	BotEnabled        bool `json:"botEnabled"`
 	BotMmEnabled      bool `json:"botMmEnabled"`
-	FreeToPlay        bool `"json:"freeToPlay"`
+	FreeToPlay        bool `json:"freeToPlay"`
 	ID                int  `json:"id"`
 	RankedPlayEnabled bool `json:"rankedPlayEnabled"`
 }
