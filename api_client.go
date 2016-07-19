@@ -67,6 +67,7 @@ type APIClient struct {
 	endpoint      string
 	game          string
 	region        string
+	shardName     string
 	client        *http.Client
 	totalRequests int
 	key           string // API key
