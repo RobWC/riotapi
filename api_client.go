@@ -72,6 +72,7 @@ type APIClient struct {
 	key           string // API key
 	tokens        chan struct{}
 	RateLimit     *RateLimit
+	shardName     string
 }
 
 // NewAPIClient create an initalized APIClient

@@ -1,7 +1,9 @@
 package riotapi
 
 // ChampionStatusList a list of all the currently available champions
-type ChampionStatusList []*ChampionStatus
+type ChampionStatusList struct {
+	Champions []*ChampionStatus `json:"champions"`
+}
 
 // ChampionStatus the current status of a Champion
 type ChampionStatus struct {
