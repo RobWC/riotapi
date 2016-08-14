@@ -104,6 +104,15 @@ func (c *APIClient) genURL(path []string) string {
 	return strings.Join(path, "/")
 }
 
+func (c *APIClient) genStaticRequest(method, version, api string, query url.Values) (*http.Request, error) {
+	u := url.URL{}
+	u.Scheme = "https"
+	u.Host = strings.Join([]string{c.region, ".api.pvp.net"}, "")
+	u.Path = fmt.Sprintf("/api/%s/static-data/%s/%s/%s", c.game, c.region, version, api)
+	u.RawQuery = query.Encode()
+	return http.NewRequest(method, u.String(), nil)
+}
+
 func (c *APIClient) genRequest(method, version, api string, query url.Values) (*http.Request, error) {
 	u := url.URL{}
 	u.Scheme = "https"

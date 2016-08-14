@@ -1,5 +1,6 @@
 package riotapi
 
+// ChampionData champion list data
 type ChampionData struct {
 	Type      string              `json:"type"`
 	Format    string              `json:"format"`
@@ -8,6 +9,7 @@ type ChampionData struct {
 	Keys      map[string]string   `json:"keys"`
 }
 
+// Champion champion details
 type Champion struct {
 	ID          int                   `json:"id"`
 	Key         string                `json:"key"`
@@ -28,42 +30,44 @@ type Champion struct {
 	Recommended []ChampionRecommended `json:"recommended"`
 }
 
-type ChampionRecommended struct{}
-
+// ChampionSkin jdetails about a champion skin
 type ChampionSkin struct {
 	ID   int    `json:"id"`
 	Num  int    `json:"num"`
 	Name string `json:"name"`
 }
 
+// ChampionSpell champion abilitiy
 type ChampionSpell struct {
-	ID           string              `json:"id"`
-	Name         string              `json:"name"`
-	Description  string              `json:"description"`
-	ToolTip      string              `json:"tooltip"`
-	LevelTip     map[string][]string `json:"leveltip"`
-	MaxRank      int                 `json:"maxrank"`
-	Cooldown     []float32           `json:"cooldown"`
-	CooldownBurn string              `json:"cooldownBurn"`
-	Cost         []int               `json:"cost"`
-	CostBurn     string              `json:"costBurn"`
-	Effect       [][]float32         `json:"effect"` //TODO: What is this really?
-	EffectBurn   []string            `json:"effectburn"`
-	Vars         []SpellVar          `json:"vars"`
-	CostType     string              `json:"costType"`
-	Range        []float32           `json:"range"`
-	RangeBurn    string              `json:"rangeBurn"`
-	Image        Image               `json:"image"`
-	AltImages    Image               `json:"altimages"`
-	Resource     string              `json:"resource"`
+	ID           string      `json:"id"`
+	Name         string      `json:"name"`
+	Description  string      `json:"description"`
+	ToolTip      string      `json:"tooltip"`
+	LevelTip     LevelTip    `json:"leveltip"`
+	MaxRank      int         `json:"maxrank"`
+	Cooldown     []float32   `json:"cooldown"`
+	CooldownBurn string      `json:"cooldownBurn"`
+	Cost         []int       `json:"cost"`
+	CostBurn     string      `json:"costBurn"`
+	Effect       [][]float32 `json:"effect"` //TODO: What is this really?
+	EffectBurn   []string    `json:"effectburn"`
+	Vars         []SpellVar  `json:"vars"`
+	CostType     string      `json:"costType"`
+	Range        []float32   `json:"range"`
+	RangeBurn    string      `json:"rangeBurn"`
+	Image        Image       `json:"image"`
+	AltImages    Image       `json:"altimages"`
+	Resource     string      `json:"resource"`
 }
 
+// SpellVar spell data
 type SpellVar struct {
 	Link  string    `json:"link"`
 	Coeff []float32 `json:"coeff"`
 	Key   string    `json:"key"`
 }
 
+// ChampionInfo
 type ChampionInfo struct {
 	Attack     int `json:"attack"`
 	Defense    int `json:"defense"`
@@ -71,6 +75,7 @@ type ChampionInfo struct {
 	Difficulty int `json:"difficulty" gorethink:"difficulty"`
 }
 
+// ChampionStats champion stats details
 type ChampionStats struct {
 	HP                   float32 `json:"hp"`
 	HPPerLevel           float32 `json:"hpperlevel"`
@@ -94,9 +99,32 @@ type ChampionStats struct {
 	AttackSpeedPerLevel  float32 `json:"attackspeedperlevel"`
 }
 
+// ChampionPassive champion passive ability detais
 type ChampionPassive struct {
 	Description          string `json:"description"`
 	SanitizedDescription string `json:"sanitizedDescription"`
 	Name                 string `json:"name"`
 	Image                Image  `json:"image"`
+}
+
+// ChampionRecommended recommended champion options
+type ChampionRecommended struct {
+	Blocks []*BlockData
+}
+
+// BlockData champion recommended block data
+type BlockData struct {
+	Items []*BlockItem `json:"items"`
+}
+
+// BlockItem champion recommended block item data
+type BlockItem struct {
+	Count int `json:"count"`
+	ID    int `json:"id"`
+}
+
+// LevelTip champipn level tip data
+type LevelTip struct {
+	Effect []*string `json:"effect"`
+	Label  []*string `json:"label"`
 }

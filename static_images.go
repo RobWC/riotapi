@@ -8,6 +8,7 @@ import (
 	"image/draw"
 	"image/jpeg"
 	"image/png"
+	"log"
 
 	"io/ioutil"
 	"net/http"
@@ -42,6 +43,7 @@ func (i *Image) FetchSprite(version string) (image.Image, error) {
 		if err != nil {
 			return nil, err
 		}
+		log.Println("coord", i.X, i.Y, i.W, i.H)
 		m := image.NewRGBA(image.Rect(0, 0, i.W, i.H))
 		draw.Draw(m, m.Bounds(), img, image.Point{X: i.X, Y: i.Y}, draw.Src)
 
@@ -83,7 +85,7 @@ func (i *Image) EncodeImage(version string) (string, error) {
 	buff := new(bytes.Buffer)
 	err = jpeg.Encode(buff, img, nil)
 	if err != nil {
-		return "", err
+		log.Println(err)
 	}
 
 	i.Encoded = base64.StdEncoding.EncodeToString(buff.Bytes())
