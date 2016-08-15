@@ -1,27 +1,34 @@
-package godragon
-
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-)
+package riotapi
 
 // Item item data
 type Item struct {
-	Name        string     `json:"name"`
-	Group       string     `json:"group"`
-	Description string     `json:"description"`
-	Colloq      string     `json:"colloq"`
-	Plaintext   string     `json:"plaintext"`
-	Into        []string   `json:"into"`
-	Image       Image      `json:"image"`
-	Cost        ItemCost   `json:"gold"`
-	Tags        []string   `json:"tags"`
-	Stats       ItemStats  `json:"stats"`
-	Effect      ItemEffect `json:"effect"`
-	Maps        ItemMapList    `json:"maps"`
-	ID          string
+	Colloq           string      `json:"colloq"`
+	ConsumeOnFull    bool        `json:"consumeOnFull"`
+	Consumed         bool        `json:"consumed"`
+	Depth            int         `json:"depth"`
+	Description      string      `json:"description"`
+	From             []string    `json:"from"`
+	Gold             ItemCost    `json:"gold"`
+	Group            string      `json:"group"`
+	HideFromAll      bool        `json:"hideFromAll"`
+	ID               int         `json:"id"`
+	Image            Image       `json:"image"`
+	InStore          bool        `json:"inStore"`
+	Into             []string    `json:"into"`
+	Maps             ItemMapList `json:"maps"`
+	Name             string      `json:"name"`
+	PlainText        string      `json:"plaintext"`
+	RequiredChampion string      `json:"requiredChampion"`
+	Rune             RuneData    `json:"rune"`
+	Stats            ItemStats   `json:"stats"`
+	Tags             []string    `json:"tags"`
+}
+
+// RuneData rune metadata
+type RuneData struct {
+	IsRune bool   `json:"isRune"`
+	Tier   string `json:"tier"`
+	Type   string `json:"type"`
 }
 
 // ItemMapList list of maps an item can be used on
