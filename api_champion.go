@@ -9,7 +9,7 @@ import (
 // https://developer.riotgames.com/api/methods#!/1077
 
 // ChampionStatus get the status of a current champion
-// This is userful to see if the champ is free to play, enabled in ranked etc
+// This is useful to see if the champ is free to play, enabled in ranked etc
 func (c *APIClient) ChampionStatus() (cs *ChampionStatusList, err error) {
 	var req *http.Request
 
@@ -31,7 +31,7 @@ func (c *APIClient) ChampionStatus() (cs *ChampionStatusList, err error) {
 }
 
 // ChampionStatusByID get the status of a current champion
-// This is userful to see if the champ is free to play, enabled in ranked etc
+// This is useful to see if the champ is free to play, enabled in ranked etc
 func (c *APIClient) ChampionStatusByID(id int) (cs *ChampionStatus, err error) {
 	var req *http.Request
 
