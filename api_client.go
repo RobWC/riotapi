@@ -1,8 +1,10 @@
 package riotapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -129,12 +131,11 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 	// manipulate request
 	if apiKey {
 		query := req.URL.Query()
-		query.Add("api_key", strings.ToUpper(c.key))
+		query.Add("api_key", c.key)
 
 		//rebuild request
 		req.URL.RawQuery = query.Encode()
 	}
-
 	if c.RateLimit.RetryAfter > 0 {
 		time.Sleep(time.Second * time.Duration(c.RateLimit.RetryAfter))
 	}
@@ -191,4 +192,21 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 
 	r := <-rc
 	return r.data, r.err
+}
+
+func (c *APIClient) makeRequest(method, version, api string, query url.Values, data interface{}, auth bool) error {
+	req, err := c.genRequest(method, version, api, query)
+	if err != nil {
+		return err
+	}
+	respData, err := c.do(req, auth)
+	if err != nil {
+		return err
+	}
+	log.Println(data)
+	err = json.Unmarshal(respData, &data)
+	if err != nil {
+		return err
+	}
+	return err
 }

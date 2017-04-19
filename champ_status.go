@@ -14,3 +14,11 @@ type ChampionStatus struct {
 	ID                int  `json:"id"`
 	RankedPlayEnabled bool `json:"rankedPlayEnabled"`
 }
+
+func (cs *ChampionStatus) Empty() {
+
+}
+
+type RiotApiData interface {
+	Empty()
+}

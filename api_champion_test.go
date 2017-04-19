@@ -18,6 +18,7 @@ func TestChampionStatus(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Log(cs)
+	t.Log("WIN")
 }
 
 func TestChampionStatusByID(t *testing.T) {
