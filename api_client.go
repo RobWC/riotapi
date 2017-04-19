@@ -1,10 +1,8 @@
 package riotapi
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -109,7 +107,7 @@ func (c *APIClient) genURL(path []string) string {
 func (c *APIClient) genStaticRequest(method, version, api string, query url.Values) (*http.Request, error) {
 	u := url.URL{}
 	u.Scheme = "https"
-	u.Host = strings.Join([]string{c.region, ".api.pvp.net"}, "")
+	u.Host = APIEndpoints[c.region]
 	u.Path = fmt.Sprintf("/api/%s/static-data/%s/%s/%s", c.game, c.region, version, api)
 	u.RawQuery = query.Encode()
 	return http.NewRequest(method, u.String(), nil)
@@ -118,7 +116,7 @@ func (c *APIClient) genStaticRequest(method, version, api string, query url.Valu
 func (c *APIClient) genRequest(method, version, api string, query url.Values) (*http.Request, error) {
 	u := url.URL{}
 	u.Scheme = "https"
-	u.Host = strings.Join([]string{c.region, ".api.pvp.net"}, "")
+	u.Host = APIEndpoints[c.region]
 	u.Path = fmt.Sprintf("/api/%s/%s/%s/%s", c.game, c.region, version, api)
 	u.RawQuery = query.Encode()
 	return http.NewRequest(method, u.String(), nil)
@@ -194,19 +192,14 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 	return r.data, r.err
 }
 
-func (c *APIClient) makeRequest(method, version, api string, query url.Values, data interface{}, auth bool) error {
+func (c *APIClient) makeRequest(method, version, api string, query url.Values, auth bool) (data []byte, err error) {
 	req, err := c.genRequest(method, version, api, query)
 	if err != nil {
-		return err
+		return data, err
 	}
-	respData, err := c.do(req, auth)
+	data, err = c.do(req, auth)
 	if err != nil {
-		return err
+		return data, err
 	}
-	log.Println(data)
-	err = json.Unmarshal(respData, &data)
-	if err != nil {
-		return err
-	}
-	return err
+	return data, err
 }

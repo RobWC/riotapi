@@ -2,7 +2,6 @@ package riotapi
 
 import (
 	"encoding/json"
-	"net/http"
 	"strconv"
 )
 
@@ -10,36 +9,24 @@ import (
 
 // ChampionStatus get the status of a current champion
 // This is useful to see if the champ is free to play, enabled in ranked etc
-func (c *APIClient) ChampionStatus() (cs *ChampionStatusList, err error) {
-	var req *http.Request
-
-	req, err = c.genRequest("GET", "v1.2", "champion", nil)
+func (c *APIClient) ChampionStatus() (cl *ChampionStatusList, err error) {
+	data, err := c.makeRequest("GET", "v1.2", "champion", nil, true)
 	if err != nil {
-		return cs, err
-	}
-	data, err := c.do(req, true)
-	if err != nil {
-		return cs, err
+		return cl, err
 	}
 
-	err = json.Unmarshal(data, &cs)
+	err = json.Unmarshal(data, &cl)
 	if err != nil {
 		return nil, err
 	}
 
-	return cs, err
+	return cl, err
 }
 
 // ChampionStatusByID get the status of a current champion
 // This is useful to see if the champ is free to play, enabled in ranked etc
 func (c *APIClient) ChampionStatusByID(id int) (cs *ChampionStatus, err error) {
-	var req *http.Request
-
-	req, err = c.genRequest("GET", "v1.2", c.genURL([]string{"champion", strconv.Itoa(id)}), nil)
-	if err != nil {
-		return cs, err
-	}
-	data, err := c.do(req, true)
+	data, err := c.makeRequest("GET", "v1.2", c.genURL([]string{"champion", strconv.Itoa(id)}), nil, true)
 	if err != nil {
 		return cs, err
 	}
