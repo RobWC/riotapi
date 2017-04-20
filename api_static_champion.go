@@ -1,8 +1,6 @@
 package riotapi
 
 import (
-	"encoding/json"
-	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
@@ -35,8 +33,6 @@ const (
 // StaticChampion get static champion data
 // If version is not defined then it uses the current version
 func (c *APIClient) StaticChampion(version string, champData ...ChampDataTag) (cl *ChampionData, err error) {
-	var req *http.Request
-
 	// setup api query options
 	q := url.Values{}
 	if version != "" {
@@ -49,18 +45,9 @@ func (c *APIClient) StaticChampion(version string, champData ...ChampDataTag) (c
 		}
 	}
 
-	req, err = c.genStaticRequest("GET", "v1.2", "champion", q)
+	err = c.makeStaticRequest("GET", "v1.2", "champion", q, true, cl)
 	if err != nil {
 		return cl, err
-	}
-	data, err := c.do(req, true)
-	if err != nil {
-		return cl, err
-	}
-
-	err = json.Unmarshal(data, &cl)
-	if err != nil {
-		return nil, err
 	}
 
 	return cl, err
@@ -72,8 +59,6 @@ func (c *APIClient) StaticChampion(version string, champData ...ChampDataTag) (c
 // StaticChampionByID get a champion by ID
 // If version is not defined then it uses the current version
 func (c *APIClient) StaticChampionByID(id int, version string, champData ...ChampDataTag) (cd *Champion, err error) {
-	var req *http.Request
-
 	// setup api query options
 	q := url.Values{}
 	if version != "" {
@@ -86,18 +71,9 @@ func (c *APIClient) StaticChampionByID(id int, version string, champData ...Cham
 		}
 	}
 
-	req, err = c.genStaticRequest("GET", "v1.2", strings.Join([]string{"champion", strconv.Itoa(id)}, "/"), q)
+	err = c.makeStaticRequest("GET", "v1.2", strings.Join([]string{"champion", strconv.Itoa(id)}, "/"), q, true, cd)
 	if err != nil {
 		return cd, err
-	}
-	data, err := c.do(req, true)
-	if err != nil {
-		return cd, err
-	}
-
-	err = json.Unmarshal(data, &cd)
-	if err != nil {
-		return nil, err
 	}
 
 	return cd, err

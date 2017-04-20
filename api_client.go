@@ -1,8 +1,10 @@
 package riotapi
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -58,8 +60,13 @@ var ShardName = map[string]string{
 
 // RateLimit the current rate limit of the api
 type RateLimit struct {
-	Limits     map[string]string
-	RetryAfter int
+	LimitType            map[string]string // X-Rate-Limit-Type
+	RetryAfter           int               // Retry-After
+	AppRateLimitCount    map[string]int    // X-App-Rate-Limit-Count
+	MethodRateLimitCount map[string]int    // X-Method-Rate-Limit-Count
+
+	NextAttempt time.Time
+	Limits      map[string]string
 }
 
 // APIClient Riot API client
@@ -148,6 +155,16 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 			<-c.tokens
 		}()
 
+		// check for rate limiting
+		// check retry limit
+		// set a timer to wait for acceptable time
+
+		if !time.Now().After(c.RateLimit.NextAttempt) {
+			// Wait for the next attempt
+			t := time.NewTimer(time.Since(c.RateLimit.NextAttempt))
+			<-t.C
+		}
+
 		c.tokens <- struct{}{}
 		resp, err := c.client.Do(&req)
 		if err != nil {
@@ -158,15 +175,14 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 		}
 		defer resp.Body.Close()
 
-		rl := req.Header.Get("X-Rate-Limit-Count")
+		// Update rate limiting
+		// https://developer.riotgames.com/rate-limiting.html
+		rl := resp.Header.Get("X-Rate-Limit-Count")
 		if rl != "" {
 			c.updateRateLimits(rl)
 		}
 
-		ra := req.Header.Get("Retry-After")
-		if rl != "" {
-			c.updateRetry(ra)
-		}
+		log.Println(resp.Header.Get("X-App-Rate-Limit-Count"))
 
 		data, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
@@ -175,6 +191,15 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 				err  error
 			}{nil, err}
 		}
+
+		switch resp.StatusCode {
+		case http.StatusTooManyRequests:
+
+			//ra := resp.Header.Get("Retry-After")
+			//c.RateLimit.NextAttempt = time.Now().Add(time.Second * time.Duration(ra))
+
+		}
+
 		if resp.StatusCode != http.StatusOK {
 			rc <- struct {
 				data []byte
@@ -186,20 +211,47 @@ func (c *APIClient) do(req *http.Request, apiKey bool) ([]byte, error) {
 			data []byte
 			err  error
 		}{data, err}
+
 	}(*req)
 
 	r := <-rc
 	return r.data, r.err
 }
 
-func (c *APIClient) makeRequest(method, version, api string, query url.Values, auth bool) (data []byte, err error) {
+func (c *APIClient) makeRequest(method, version, api string, query url.Values, auth bool, data interface{}) error {
 	req, err := c.genRequest(method, version, api, query)
 	if err != nil {
-		return data, err
+		return err
 	}
-	data, err = c.do(req, auth)
+
+	respData, err := c.do(req, auth)
 	if err != nil {
-		return data, err
+		return err
 	}
-	return data, err
+
+	err = json.Unmarshal(respData, &data)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func (c *APIClient) makeStaticRequest(method, version, api string, query url.Values, auth bool, data interface{}) error {
+	req, err := c.genRequest(method, version, api, query)
+	if err != nil {
+		return err
+	}
+
+	respData, err := c.do(req, auth)
+	if err != nil {
+		return err
+	}
+
+	err = json.Unmarshal(respData, &data)
+	if err != nil {
+		return err
+	}
+
+	return err
 }

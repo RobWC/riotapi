@@ -4,6 +4,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 )
 
 // updateRateLimits update the current rate limits
@@ -25,8 +26,13 @@ func (c *APIClient) updateRateLimits(limits string) {
 func (c *APIClient) updateRetry(retry string) {
 	v, err := strconv.Atoi(retry)
 	if err != nil {
-		// retry value incorret
+		// retry value incorrect
 		log.Printf("Retry value incorrect %s\n", retry)
 	}
 	c.RateLimit.RetryAfter = v
+}
+
+// updateRateLimitCount
+func (c *APIClient) updateRateLimitCount(count string) {
+
 }
